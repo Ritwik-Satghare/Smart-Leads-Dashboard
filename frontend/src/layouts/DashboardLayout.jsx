@@ -1,8 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
+import { useSocketEvents } from '../hooks/useSocketEvents';
 
 const DashboardLayout = () => {
+  useSocketEvents();
+  
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />

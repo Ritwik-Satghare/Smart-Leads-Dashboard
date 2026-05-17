@@ -1,163 +1,184 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'; // We'll install recharts
+import { useQueries } from '@tanstack/react-query';
+import { analyticsService } from '../services/analyticsService';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend
+} from 'recharts';
 
-const data = [
-  { name: 'Mon', leads: 40, qualified: 24 },
-  { name: 'Tue', leads: 30, qualified: 13 },
-  { name: 'Wed', leads: 20, qualified: 98 },
-  { name: 'Thu', leads: 27, qualified: 39 },
-  { name: 'Fri', leads: 18, qualified: 48 },
-  { name: 'Sat', leads: 23, qualified: 38 },
-  { name: 'Sun', leads: 34, qualified: 43 },
-];
+const COLORS = ['#4f46e5', '#006a61', '#ba1a1a', '#eab308', '#ec4899', '#8b5cf6'];
+
+const StatCardSkeleton = () => (
+  <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col h-32 animate-pulse">
+    <div className="w-12 h-12 rounded-full bg-surface-variant mb-4"></div>
+    <div className="h-4 bg-surface-variant rounded w-24 mb-2"></div>
+    <div className="h-8 bg-surface-variant rounded w-16"></div>
+  </div>
+);
+
+const ChartSkeleton = () => (
+  <div className="w-full h-full bg-surface-variant/20 rounded animate-pulse"></div>
+);
+
+const EmptyState = ({ message }) => (
+  <div className="w-full h-full flex flex-col items-center justify-center text-on-surface-variant p-8">
+    <span className="material-symbols-outlined text-4xl mb-2 opacity-50">analytics</span>
+    <p>{message}</p>
+  </div>
+);
 
 const DashboardOverview = () => {
+  const [
+    { data: overviewData, isLoading: isLoadingOverview, isError: isErrorOverview },
+    { data: sourcesData, isLoading: isLoadingSources, isError: isErrorSources },
+    { data: statusData, isLoading: isLoadingStatus, isError: isErrorStatus },
+    { data: monthlyData, isLoading: isLoadingMonthly, isError: isErrorMonthly }
+  ] = useQueries({
+    queries: [
+      { queryKey: ['analytics', 'overview'], queryFn: analyticsService.getOverview },
+      { queryKey: ['analytics', 'sources'], queryFn: analyticsService.getSources },
+      { queryKey: ['analytics', 'status'], queryFn: analyticsService.getStatus },
+      { queryKey: ['analytics', 'monthly'], queryFn: analyticsService.getMonthly }
+    ]
+  });
+
+  const overview = overviewData?.data || { total: 0, qualified: 0, lost: 0, conversionRate: 0 };
+  const sources = sourcesData?.data || [];
+  const statuses = statusData?.data || [];
+  const monthly = monthlyData?.data || [];
+
   return (
     <div className="max-w-container-max mx-auto">
       <div className="mb-8">
-        <h3 className="text-headline-lg font-headline-lg text-on-surface mb-2">Overview</h3>
-        <p className="text-body-md font-body-md text-on-surface-variant">Your key metrics for the current quarter.</p>
+        <h3 className="text-headline-lg font-headline-lg text-on-surface mb-2">Analytics Dashboard</h3>
+        <p className="text-body-md font-body-md text-on-surface-variant">Real-time metrics and lead insights.</p>
       </div>
 
+      {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-8">
-        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
-              <span className="material-symbols-outlined">groups</span>
+        {isLoadingOverview ? (
+          <>
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+          </>
+        ) : isErrorOverview ? (
+          <div className="col-span-full text-error bg-error-container/20 p-4 rounded-xl border border-error/30">Failed to load overview data.</div>
+        ) : (
+          <>
+            <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col hover:border-primary/50 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <div className="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+                  <span className="material-symbols-outlined">groups</span>
+                </div>
+              </div>
+              <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Total Leads</h4>
+              <p className="text-display-lg font-display-lg text-on-surface">{overview.total}</p>
             </div>
-            <span className="bg-secondary-container/30 text-secondary-fixed-dim text-label-sm font-label-sm px-2 py-1 rounded-md flex items-center gap-1">
-              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>trending_up</span> +12%
-            </span>
+
+            <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col hover:border-primary/50 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <div className="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
+                  <span className="material-symbols-outlined">check_circle</span>
+                </div>
+              </div>
+              <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Qualified Leads</h4>
+              <p className="text-display-lg font-display-lg text-on-surface">{overview.qualified}</p>
+            </div>
+
+            <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col hover:border-primary/50 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <div className="w-12 h-12 rounded-full bg-error-container/20 flex items-center justify-center text-error">
+                  <span className="material-symbols-outlined">cancel</span>
+                </div>
+              </div>
+              <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Lost Leads</h4>
+              <p className="text-display-lg font-display-lg text-on-surface">{overview.lost}</p>
+            </div>
+
+            <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col hover:border-primary/50 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <div className="w-12 h-12 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+                  <span className="material-symbols-outlined">insights</span>
+                </div>
+              </div>
+              <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Conversion Rate</h4>
+              <p className="text-display-lg font-display-lg text-on-surface">{overview.conversionRate}%</p>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Charts Row 1 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-gutter mb-8">
+        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col min-h-[400px]">
+          <h3 className="text-headline-md font-headline-md text-on-surface mb-6">Leads by Status</h3>
+          <div className="flex-1 w-full relative">
+            {isLoadingStatus ? <ChartSkeleton /> : isErrorStatus ? <EmptyState message="Failed to load status data" /> : statuses.length === 0 ? <EmptyState message="No data available" /> : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={statuses} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="status" tickLine={false} axisLine={false} />
+                  <YAxis tickLine={false} axisLine={false} />
+                  <Tooltip cursor={{fill: 'rgba(0,0,0,0.05)'}} contentStyle={{ borderRadius: '12px', border: '1px solid #c7c4d8' }} />
+                  <Bar dataKey="count" fill="#4f46e5" radius={[4, 4, 0, 0]}>
+                    {statuses.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
-          <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Total Leads</h4>
-          <p className="text-display-lg font-display-lg text-on-surface">4,289</p>
         </div>
 
-        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
-              <span className="material-symbols-outlined">check_circle</span>
-            </div>
-            <span className="bg-secondary-container/30 text-secondary-fixed-dim text-label-sm font-label-sm px-2 py-1 rounded-md flex items-center gap-1">
-              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>trending_up</span> +5.4%
-            </span>
+        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col min-h-[400px]">
+          <h3 className="text-headline-md font-headline-md text-on-surface mb-6">Leads by Source</h3>
+          <div className="flex-1 w-full relative">
+            {isLoadingSources ? <ChartSkeleton /> : isErrorSources ? <EmptyState message="Failed to load sources data" /> : sources.length === 0 ? <EmptyState message="No data available" /> : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={sources}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={80}
+                    outerRadius={120}
+                    paddingAngle={5}
+                    dataKey="count"
+                    nameKey="source"
+                    label
+                  >
+                    {sources.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #c7c4d8' }} />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </div>
-          <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Qualified Leads</h4>
-          <p className="text-display-lg font-display-lg text-on-surface">1,842</p>
-        </div>
-
-        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-12 h-12 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
-              <span className="material-symbols-outlined">insights</span>
-            </div>
-            <span className="bg-error-container/30 text-error text-label-sm font-label-sm px-2 py-1 rounded-md flex items-center gap-1">
-              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>trending_down</span> -1.2%
-            </span>
-          </div>
-          <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Conversion Rate</h4>
-          <p className="text-display-lg font-display-lg text-on-surface">24.8%</p>
-        </div>
-
-        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
-              <span className="material-symbols-outlined">bolt</span>
-            </div>
-            <span className="text-on-surface-variant text-label-sm font-label-sm px-2 py-1">Today</span>
-          </div>
-          <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Recent Activity</h4>
-          <p className="text-display-lg font-display-lg text-on-surface">156</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
-        <div className="lg:col-span-2 bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-outline-variant/50">
-            <div>
-              <h3 className="text-headline-md font-headline-md text-on-surface">Weekly Lead Growth</h3>
-              <p className="text-body-sm font-body-sm text-on-surface-variant mt-1">Comparing total vs qualified leads over 7 days.</p>
-            </div>
-            <button className="text-primary hover:bg-surface-container-low px-3 py-1.5 rounded-md text-label-sm font-label-sm transition-colors border border-outline-variant/30 flex items-center gap-1">
-              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calendar_today</span>
-              This Week
-            </button>
+      {/* Charts Row 2 */}
+      <div className="grid grid-cols-1 gap-gutter mb-8">
+        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col min-h-[400px]">
+          <h3 className="text-headline-md font-headline-md text-on-surface mb-6">Monthly Leads (This Year)</h3>
+          <div className="flex-1 w-full relative">
+            {isLoadingMonthly ? <ChartSkeleton /> : isErrorMonthly ? <EmptyState message="Failed to load monthly data" /> : monthly.length === 0 ? <EmptyState message="No data available" /> : (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={monthly} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                  <YAxis tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #c7c4d8' }} />
+                  <Line type="monotone" dataKey="count" stroke="#006a61" strokeWidth={3} dot={{ r: 4, fill: '#006a61' }} activeDot={{ r: 6 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
           </div>
-          <div className="flex-1 min-h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
-                <XAxis dataKey="name" stroke="#777587" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#777587" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
-                <Tooltip cursor={{fill: 'rgba(0,0,0,0.05)'}} contentStyle={{ borderRadius: '12px', border: '1px solid #c7c4d8' }} />
-                <Bar dataKey="leads" fill="#4f46e5" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="qualified" fill="#006a61" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-outline-variant/50">
-            <h3 className="text-headline-md font-headline-md text-on-surface">Recent Leads</h3>
-            <button className="p-1 rounded hover:bg-surface-container-low text-on-surface-variant transition-colors">
-              <span className="material-symbols-outlined">more_vert</span>
-            </button>
-          </div>
-          <div className="flex flex-col gap-4 flex-1">
-            <div className="flex items-center justify-between group p-2 -mx-2 rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-label-md">
-                  AC
-                </div>
-                <div>
-                  <p className="text-label-md font-label-md text-on-surface">Acme Corp</p>
-                  <p className="text-body-sm font-body-sm text-on-surface-variant">Enterprise Plan</p>
-                </div>
-              </div>
-              <span className="bg-secondary-container/30 text-secondary-fixed-dim text-label-sm font-label-sm px-2 py-1 rounded-md">Hot</span>
-            </div>
-
-            <div className="flex items-center justify-between group p-2 -mx-2 rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary font-bold text-label-md">
-                  GL
-                </div>
-                <div>
-                  <p className="text-label-md font-label-md text-on-surface">Global Logistics</p>
-                  <p className="text-body-sm font-body-sm text-on-surface-variant">Pro Plan</p>
-                </div>
-              </div>
-              <span className="bg-surface-variant text-on-surface-variant text-label-sm font-label-sm px-2 py-1 rounded-md">Warm</span>
-            </div>
-
-            <div className="flex items-center justify-between group p-2 -mx-2 rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center text-error font-bold text-label-md">
-                  TS
-                </div>
-                <div>
-                  <p className="text-label-md font-label-md text-on-surface">Tech Solutions</p>
-                  <p className="text-body-sm font-body-sm text-on-surface-variant">Starter Plan</p>
-                </div>
-              </div>
-              <span className="bg-surface-variant text-on-surface-variant text-label-sm font-label-sm px-2 py-1 rounded-md">Cold</span>
-            </div>
-            
-            <div className="flex items-center justify-between group p-2 -mx-2 rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-label-md">
-                  N
-                </div>
-                <div>
-                  <p className="text-label-md font-label-md text-on-surface">Nexus Industries</p>
-                  <p className="text-body-sm font-body-sm text-on-surface-variant">Enterprise Plan</p>
-                </div>
-              </div>
-              <span className="bg-secondary-container/30 text-secondary-fixed-dim text-label-sm font-label-sm px-2 py-1 rounded-md">Hot</span>
-            </div>
-          </div>
-          <button className="w-full mt-4 py-2 border border-outline-variant rounded-lg text-label-md font-label-md text-primary hover:bg-surface-container-low transition-colors">
-            View All Leads
-          </button>
         </div>
       </div>
     </div>

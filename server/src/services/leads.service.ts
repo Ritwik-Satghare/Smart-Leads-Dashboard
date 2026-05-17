@@ -2,6 +2,7 @@ import { Lead, ILead } from '../models/lead.model';
 import { ICreateLeadRequest, IUpdateLeadRequest, ILeadQuery } from '../types/leads.types';
 import { UserRole } from '../types';
 import { NotFoundError, ForbiddenError } from '../utils';
+import { emitToUser } from '../socket';
 
 interface CallerContext {
   userId: string;
@@ -16,6 +17,7 @@ export const createLead = async (
     ...data,
     createdBy: caller.userId,
   });
+  emitToUser(caller.userId, 'leadCreated', lead);
   return lead;
 };
 
@@ -93,6 +95,7 @@ export const updateLead = async (
 
   Object.assign(lead, data);
   await lead.save();
+  emitToUser(String(lead.createdBy), 'leadUpdated', lead);
   return lead;
 };
 
@@ -110,5 +113,7 @@ export const deleteLead = async (
     throw new ForbiddenError('You do not have permission to delete this lead');
   }
 
+  const creatorId = String(lead.createdBy);
   await lead.deleteOne();
+  emitToUser(creatorId, 'leadDeleted', { id: leadId });
 };
