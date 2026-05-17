@@ -1,16 +1,42 @@
-# React + Vite
+# Smart Leads Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, full-stack CRM dashboard application.
 
-Currently, two official plugins are available:
+## Technologies
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend**: React, Vite, TypeScript, TailwindCSS
+- **Backend**: Node.js, Express.js, TypeScript, MongoDB
+- **Containerization**: Docker, Docker Compose
 
-## React Compiler
+## Docker Usage
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+You can start the entire MERN stack application using Docker Compose with a single command:
 
-## Expanding the ESLint configuration
+```bash
+docker compose up --build
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This will spin up:
+- **Frontend** on http://localhost:5173
+- **Backend API** on http://localhost:5000
+
+To stop the services, run:
+```bash
+docker compose down
+```
+
+## Local Setup (Without Docker)
+
+### Server
+```bash
+cd server
+npm install
+npm run dev
+```
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
