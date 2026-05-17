@@ -1,6 +1,6 @@
-import { User, IUser } from '../users/user.model';
-import { IRegisterRequest, ILoginRequest, UserRole } from '../../types';
-import { generateToken, ConflictError, UnauthorizedError } from '../../utils';
+import { User, IUser } from '../models/user.model';
+import { IRegisterRequest, ILoginRequest, UserRole } from '../types';
+import { generateToken, ConflictError, UnauthorizedError } from '../utils';
 
 interface AuthResult {
   user: {

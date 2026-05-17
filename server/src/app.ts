@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { env } from './config/env';
 import { errorHandler } from './middleware';
-import authRoutes from './modules/auth/auth.routes';
+import authRoutes from './routes/auth.routes';
+import leadsRoutes from './routes/leads.routes';
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get('/api/health', (_req, res) => {
 
 // API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/leads', leadsRoutes);
 
 // 404 handler
 app.use((_req, res) => {

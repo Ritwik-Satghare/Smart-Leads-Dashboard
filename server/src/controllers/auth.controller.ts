@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import * as authService from './auth.service';
-import { AuthenticatedRequest } from '../../types';
-import { sendResponse, NotFoundError } from '../../utils';
+import * as authService from '../services/auth.service';
+import { AuthenticatedRequest } from '../types';
+import { sendResponse, NotFoundError } from '../utils';
 
 export const register = async (
   req: Request,
