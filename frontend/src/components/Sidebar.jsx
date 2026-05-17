@@ -10,7 +10,6 @@ const Sidebar = () => {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: 'space_dashboard' },
     { name: 'Leads', path: '/leads', icon: 'groups' },
-    { name: 'Settings', path: '/settings', icon: 'tune' },
   ];
 
   const handleLogout = () => {

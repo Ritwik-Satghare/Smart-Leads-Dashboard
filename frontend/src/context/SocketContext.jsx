@@ -25,6 +25,7 @@ export const SocketProvider = ({ children }) => {
       socket.disconnect();
       setSocket(null);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, token]);
 
   return (
@@ -34,4 +35,5 @@ export const SocketProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSocket = () => useContext(SocketContext);
