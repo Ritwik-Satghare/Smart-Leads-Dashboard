@@ -8,10 +8,9 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
-    { name: 'Leads', path: '/leads', icon: 'group' },
-    { name: 'Analytics', path: '/analytics', icon: 'bar_chart' },
-    { name: 'Settings', path: '/settings', icon: 'settings' },
+    { name: 'Dashboard', path: '/dashboard', icon: 'space_dashboard' },
+    { name: 'Leads', path: '/leads', icon: 'groups' },
+    { name: 'Settings', path: '/settings', icon: 'tune' },
   ];
 
   const handleLogout = () => {
@@ -21,41 +20,42 @@ const Sidebar = () => {
   };
 
   return (
-    <nav className="bg-surface-container-lowest border-r border-outline-variant shadow-sm flex flex-col h-screen sticky top-0 left-0 w-64 px-4 py-8 hidden md:flex shrink-0 z-50">
-      <div className="flex items-center gap-3 mb-8 px-2">
-        <div className="w-10 h-10 rounded bg-primary flex items-center justify-center text-on-primary">
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>dataset</span>
+    <nav className="bg-sidebar flex flex-col h-screen sticky top-0 left-0 w-[260px] py-6 hidden md:flex shrink-0 z-50">
+      {/* Brand */}
+      <div className="flex items-center gap-3 mb-8 px-5">
+        <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
+          <span className="material-symbols-outlined text-white text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
         </div>
         <div>
-          <h1 className="text-headline-md font-headline-md font-bold text-primary">Smart Leads</h1>
-          <p className="text-label-sm font-label-sm text-on-surface-variant">Premium CRM</p>
+          <h1 className="text-[17px] font-bold text-white leading-tight">
+            Smart<span className="text-primary">Leads</span>
+          </h1>
         </div>
       </div>
-      
-      <button className="bg-primary text-on-primary rounded-full py-3 px-4 flex items-center justify-center gap-2 mb-8 hover:bg-primary/90 transition-colors">
-        <span className="material-symbols-outlined">add</span>
-        <span className="text-label-md font-label-md">Add Lead</span>
-      </button>
 
-      <ul className="flex flex-col gap-2 flex-grow">
+      {/* Navigation */}
+      <ul className="flex flex-col gap-1 flex-grow px-3">
         {navItems.map((item) => (
           <li key={item.name}>
             <NavLink
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
                   isActive
-                    ? 'bg-surface-container-low text-primary font-bold border-r-4 border-primary'
-                    : 'text-on-surface-variant hover:bg-surface-container-low'
+                    ? 'bg-primary text-white shadow-md shadow-primary/25'
+                    : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <span className="material-symbols-outlined" style={isActive ? { fontVariationSettings: "'FILL' 1" } : {}}>
+                  <span
+                    className="material-symbols-outlined text-[20px]"
+                    style={isActive ? { fontVariationSettings: "'FILL' 1" } : {}}
+                  >
                     {item.icon}
                   </span>
-                  <span className="text-label-md font-label-md">{item.name}</span>
+                  <span>{item.name}</span>
                 </>
               )}
             </NavLink>
@@ -63,35 +63,26 @@ const Sidebar = () => {
         ))}
       </ul>
 
-      <div className="mt-auto border-t border-outline-variant pt-4">
+      {/* Footer */}
+      <div className="mt-auto px-3 pt-4 border-t border-white/10 mx-3">
         {user && (
-          <div className="flex items-center gap-3 px-4 py-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-label-md font-bold">
+          <div className="flex items-center gap-3 px-3 py-3 mb-2">
+            <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary text-caption font-bold flex-shrink-0">
               {user.name?.substring(0, 2).toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-label-md text-on-surface truncate">{user.name}</p>
-              <p className="text-label-sm text-on-surface-variant capitalize">{user.role?.replace('_', ' ')}</p>
+              <p className="text-[13px] text-white font-medium truncate">{user.name}</p>
+              <p className="text-[11px] text-sidebar-text capitalize">{user.role?.replace('_', ' ')}</p>
             </div>
-          </div>
-        )}
-        <ul className="flex flex-col gap-2">
-          <li>
-            <a className="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-medium hover:bg-surface-container-low transition-all duration-200" href="#">
-              <span className="material-symbols-outlined">help</span>
-              <span className="text-label-md font-label-md">Help Center</span>
-            </a>
-          </li>
-          <li>
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-medium hover:bg-surface-container-low transition-all duration-200"
+              className="p-1.5 rounded-lg text-sidebar-text hover:text-white hover:bg-sidebar-hover transition-colors"
+              aria-label="Logout"
             >
-              <span className="material-symbols-outlined">logout</span>
-              <span className="text-label-md font-label-md">Logout</span>
+              <span className="material-symbols-outlined text-[18px]">logout</span>
             </button>
-          </li>
-        </ul>
+          </div>
+        )}
       </div>
     </nav>
   );

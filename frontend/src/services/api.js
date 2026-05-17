@@ -19,16 +19,24 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+import toast from 'react-hot-toast';
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('sl_token');
       localStorage.removeItem('sl_user');
-      // only redirect if we're not already on an auth page
       if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/register')) {
+        toast.error('Session expired. Please log in again.');
         window.location.href = '/login';
       }
+    } else if (error.response?.status === 403) {
+      toast.error('You do not have permission to perform this action.');
+    } else if (error.response?.status >= 500) {
+      toast.error('Server error. Please try again later.');
+    } else if (error.message === 'Network Error') {
+      toast.error('Network error. Please check your connection.');
     }
     return Promise.reject(error);
   }

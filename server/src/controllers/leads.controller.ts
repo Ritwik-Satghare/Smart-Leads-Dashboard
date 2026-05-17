@@ -92,3 +92,43 @@ export const remove = async (
     next(error);
   }
 };
+
+export const exportCsv = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const caller = getCaller(req);
+    // Use a very high limit to fetch all matching leads
+    const query = { ...req.query, page: 1, limit: 100000 };
+    const { leads } = await leadsService.getAllLeads(caller, query as any);
+
+    const escapeField = (field: string): string => {
+      if (field.includes(',') || field.includes('"') || field.includes('\n')) {
+        return `"${field.replace(/"/g, '""')}"`;
+      }
+      return field;
+    };
+
+    const header = 'Name,Email,Status,Source,Created At';
+    const rows = leads.map((lead) => {
+      const createdAt = new Date(lead.createdAt).toISOString();
+      return [
+        escapeField(lead.name),
+        escapeField(lead.email),
+        escapeField(lead.status),
+        escapeField(lead.source),
+        escapeField(createdAt),
+      ].join(',');
+    });
+
+    const csv = [header, ...rows].join('\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=leads-export.csv');
+    res.status(200).send(csv);
+  } catch (error) {
+    next(error);
+  }
+};

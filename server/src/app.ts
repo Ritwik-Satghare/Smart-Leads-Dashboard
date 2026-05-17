@@ -5,8 +5,11 @@ import { errorHandler } from './middleware';
 import authRoutes from './routes/auth.routes';
 import leadsRoutes from './routes/leads.routes';
 import analyticsRoutes from './routes/analytics.routes';
+import { setupSwagger } from './config/swagger';
 
 const app = express();
+
+setupSwagger(app);
 
 app.use(cors({
   origin: env.CLIENT_URL,

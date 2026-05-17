@@ -4,29 +4,57 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend
 } from 'recharts';
+import { useTheme } from '../context/ThemeContext';
 
-const COLORS = ['#4f46e5', '#006a61', '#ba1a1a', '#eab308', '#ec4899', '#8b5cf6'];
+const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
+/* ─── Skeletons ─── */
 const StatCardSkeleton = () => (
-  <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col h-32 animate-pulse">
-    <div className="w-12 h-12 rounded-full bg-surface-variant mb-4"></div>
-    <div className="h-4 bg-surface-variant rounded w-24 mb-2"></div>
-    <div className="h-8 bg-surface-variant rounded w-16"></div>
+  <div className="bg-surface-card dark:bg-dark-card rounded-xl p-5 border border-border dark:border-dark-border animate-fade-in">
+    <div className="flex justify-between items-start mb-3">
+      <div className="skeleton w-10 h-10 rounded-lg" />
+      <div className="skeleton w-16 h-5 rounded" />
+    </div>
+    <div className="skeleton h-3 w-20 rounded mb-2" />
+    <div className="skeleton h-8 w-12 rounded" />
   </div>
 );
 
 const ChartSkeleton = () => (
-  <div className="w-full h-full bg-surface-variant/20 rounded animate-pulse"></div>
+  <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-8">
+    <div className="skeleton w-full h-full rounded-lg min-h-[200px]" />
+  </div>
 );
 
-const EmptyState = ({ message }) => (
-  <div className="w-full h-full flex flex-col items-center justify-center text-on-surface-variant p-8">
-    <span className="material-symbols-outlined text-4xl mb-2 opacity-50">analytics</span>
-    <p>{message}</p>
+const EmptyState = ({ message, icon = 'analytics' }) => (
+  <div className="w-full h-full flex flex-col items-center justify-center text-text-muted dark:text-dark-text-muted p-8">
+    <span className="material-symbols-outlined text-[40px] mb-3 opacity-40">{icon}</span>
+    <p className="text-body text-center">{message}</p>
+    <p className="text-caption text-center mt-1 opacity-60">Add some leads to see insights here</p>
+  </div>
+);
+
+/* ─── Stat Card ─── */
+const StatCard = ({ icon, iconBg, iconColor, label, value, subtitle }) => (
+  <div className="bg-surface-card dark:bg-dark-card rounded-xl p-5 border border-border dark:border-dark-border hover:shadow-card-lg transition-all duration-300 group">
+    <div className="flex justify-between items-start mb-3">
+      <div className={`w-10 h-10 rounded-lg ${iconBg} flex items-center justify-center`}>
+        <span className={`material-symbols-outlined text-[20px] ${iconColor}`}>{icon}</span>
+      </div>
+      {subtitle && (
+        <span className="text-caption text-primary bg-primary/10 px-2 py-0.5 rounded-md flex items-center gap-1">
+          {subtitle}
+        </span>
+      )}
+    </div>
+    <p className="text-caption text-text-muted dark:text-dark-text-muted uppercase tracking-wider mb-1">{label}</p>
+    <p className="text-[28px] font-bold text-text-primary dark:text-dark-text leading-none">{value}</p>
   </div>
 );
 
 const DashboardOverview = () => {
+  const { isDark } = useTheme();
+
   const [
     { data: overviewData, isLoading: isLoadingOverview, isError: isErrorOverview },
     { data: sourcesData, isLoading: isLoadingSources, isError: isErrorSources },
@@ -46,82 +74,67 @@ const DashboardOverview = () => {
   const statuses = statusData?.data || [];
   const monthly = monthlyData?.data || [];
 
+  const gridColor = isDark ? '#334155' : '#e2e8f0';
+  const textColor = isDark ? '#f1f5f9' : '#0f172a';
+  const tooltipStyle = {
+    backgroundColor: isDark ? '#1e293b' : '#ffffff',
+    borderColor: isDark ? '#334155' : '#e2e8f0',
+    color: textColor,
+    borderRadius: '12px',
+  };
+
   return (
-    <div className="max-w-container-max mx-auto">
-      <div className="mb-8">
-        <h3 className="text-headline-lg font-headline-lg text-on-surface mb-2">Analytics Dashboard</h3>
-        <p className="text-body-md font-body-md text-on-surface-variant">Real-time metrics and lead insights.</p>
+    <div className="max-w-[1400px] mx-auto">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h1 className="text-heading text-text-primary dark:text-dark-text">Dashboard</h1>
+            <p className="text-body text-text-secondary dark:text-dark-text-secondary mt-0.5">
+              Real-time aggregated data from your lead pipeline.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+            <span className="text-caption text-primary font-medium">Live Sync Active</span>
+          </div>
+        </div>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-8">
+      {/* Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {isLoadingOverview ? (
-          <>
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-          </>
+          <><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></>
         ) : isErrorOverview ? (
-          <div className="col-span-full text-error bg-error-container/20 p-4 rounded-xl border border-error/30">Failed to load overview data.</div>
+          <div className="col-span-full bg-danger-light dark:bg-danger/10 text-danger p-4 rounded-xl border border-danger/20 text-body">
+            Failed to load metrics. Please try again.
+          </div>
         ) : (
           <>
-            <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col hover:border-primary/50 transition-colors">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
-                  <span className="material-symbols-outlined">groups</span>
-                </div>
-              </div>
-              <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Total Leads</h4>
-              <p className="text-display-lg font-display-lg text-on-surface">{overview.total}</p>
-            </div>
-
-            <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col hover:border-primary/50 transition-colors">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
-                  <span className="material-symbols-outlined">check_circle</span>
-                </div>
-              </div>
-              <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Qualified Leads</h4>
-              <p className="text-display-lg font-display-lg text-on-surface">{overview.qualified}</p>
-            </div>
-
-            <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col hover:border-primary/50 transition-colors">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-full bg-error-container/20 flex items-center justify-center text-error">
-                  <span className="material-symbols-outlined">cancel</span>
-                </div>
-              </div>
-              <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Lost Leads</h4>
-              <p className="text-display-lg font-display-lg text-on-surface">{overview.lost}</p>
-            </div>
-
-            <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col hover:border-primary/50 transition-colors">
-              <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
-                  <span className="material-symbols-outlined">insights</span>
-                </div>
-              </div>
-              <h4 className="text-label-md font-label-md text-on-surface-variant mb-1">Conversion Rate</h4>
-              <p className="text-display-lg font-display-lg text-on-surface">{overview.conversionRate}%</p>
-            </div>
+            <StatCard icon="groups" iconBg="bg-primary/10" iconColor="text-primary" label="Total Leads" value={overview.total} subtitle="↗ Live Database" />
+            <StatCard icon="verified" iconBg="bg-info/10" iconColor="text-info" label="Qualified" value={overview.qualified} subtitle="↗ Active" />
+            <StatCard icon="cancel" iconBg="bg-danger/10" iconColor="text-danger" label="Lost Leads" value={overview.lost} />
+            <StatCard icon="trending_up" iconBg="bg-warning/10" iconColor="text-warning" label="Conversion Rate" value={`${overview.conversionRate}%`} />
           </>
         )}
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-gutter mb-8">
-        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col min-h-[400px]">
-          <h3 className="text-headline-md font-headline-md text-on-surface mb-6">Leads by Status</h3>
-          <div className="flex-1 w-full relative">
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        {/* Status Bar Chart */}
+        <div className="bg-surface-card dark:bg-dark-card rounded-xl p-5 border border-border dark:border-dark-border min-h-[400px] flex flex-col">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-subhead text-text-primary dark:text-dark-text">Leads by Status</h3>
+          </div>
+          <div className="h-[320px] w-full relative">
             {isLoadingStatus ? <ChartSkeleton /> : isErrorStatus ? <EmptyState message="Failed to load status data" /> : statuses.length === 0 ? <EmptyState message="No data available" /> : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={statuses} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="status" tickLine={false} axisLine={false} />
-                  <YAxis tickLine={false} axisLine={false} />
-                  <Tooltip cursor={{fill: 'rgba(0,0,0,0.05)'}} contentStyle={{ borderRadius: '12px', border: '1px solid #c7c4d8' }} />
-                  <Bar dataKey="count" fill="#4f46e5" radius={[4, 4, 0, 0]}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
+                  <XAxis dataKey="status" tickLine={false} axisLine={false} stroke={textColor} />
+                  <YAxis tickLine={false} axisLine={false} stroke={textColor} />
+                  <Tooltip cursor={{fill: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}} contentStyle={tooltipStyle} />
+                  <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]}>
                     {statuses.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
@@ -132,9 +145,12 @@ const DashboardOverview = () => {
           </div>
         </div>
 
-        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col min-h-[400px]">
-          <h3 className="text-headline-md font-headline-md text-on-surface mb-6">Leads by Source</h3>
-          <div className="flex-1 w-full relative">
+        {/* Source Pie Chart */}
+        <div className="bg-surface-card dark:bg-dark-card rounded-xl p-5 border border-border dark:border-dark-border min-h-[400px] flex flex-col">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-subhead text-text-primary dark:text-dark-text">Leads by Source</h3>
+          </div>
+          <div className="h-[320px] w-full relative">
             {isLoadingSources ? <ChartSkeleton /> : isErrorSources ? <EmptyState message="Failed to load sources data" /> : sources.length === 0 ? <EmptyState message="No data available" /> : (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -142,18 +158,19 @@ const DashboardOverview = () => {
                     data={sources}
                     cx="50%"
                     cy="50%"
-                    innerRadius={80}
-                    outerRadius={120}
+                    innerRadius={70}
+                    outerRadius={100}
                     paddingAngle={5}
                     dataKey="count"
                     nameKey="source"
-                    label
+                    label={({ source, name, percent }) => `${source || name} ${(percent * 100).toFixed(0)}%`}
+                    labelLine={{ stroke: textColor }}
                   >
                     {sources.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #c7c4d8' }} />
+                  <Tooltip contentStyle={tooltipStyle} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -162,23 +179,23 @@ const DashboardOverview = () => {
         </div>
       </div>
 
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 gap-gutter mb-8">
-        <div className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant shadow-sm flex flex-col min-h-[400px]">
-          <h3 className="text-headline-md font-headline-md text-on-surface mb-6">Monthly Leads (This Year)</h3>
-          <div className="flex-1 w-full relative">
-            {isLoadingMonthly ? <ChartSkeleton /> : isErrorMonthly ? <EmptyState message="Failed to load monthly data" /> : monthly.length === 0 ? <EmptyState message="No data available" /> : (
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={monthly} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                  <YAxis tickLine={false} axisLine={false} />
-                  <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #c7c4d8' }} />
-                  <Line type="monotone" dataKey="count" stroke="#006a61" strokeWidth={3} dot={{ r: 4, fill: '#006a61' }} activeDot={{ r: 6 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            )}
-          </div>
+      {/* Monthly Line Chart */}
+      <div className="bg-surface-card dark:bg-dark-card rounded-xl p-5 border border-border dark:border-dark-border min-h-[400px] flex flex-col mb-6">
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="text-subhead text-text-primary dark:text-dark-text">Monthly Leads (This Year)</h3>
+        </div>
+        <div className="h-[320px] w-full relative">
+          {isLoadingMonthly ? <ChartSkeleton /> : isErrorMonthly ? <EmptyState message="Failed to load monthly data" /> : monthly.length === 0 ? <EmptyState message="No data available" /> : (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={monthly} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} stroke={textColor} />
+                <YAxis tickLine={false} axisLine={false} stroke={textColor} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} activeDot={{ r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
     </div>

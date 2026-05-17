@@ -3,12 +3,14 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ProtectedRoute, GuestRoute } from './components/AuthGuard';
 import DashboardLayout from './layouts/DashboardLayout';
 import DashboardOverview from './pages/DashboardOverview';
 import Leads from './pages/Leads';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import NotFound from './pages/NotFound';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,53 +25,50 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthProvider>
-          <SocketProvider>
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 3500,
-                style: {
-                  background: '#ffffff',
-                  color: '#0b1c30',
-                  border: '1px solid #c7c4d8',
-                  borderRadius: '12px',
-                  fontSize: '14px',
-                },
-                success: {
-                  iconTheme: { primary: '#006a61', secondary: '#ffffff' },
-                },
-                error: {
-                  iconTheme: { primary: '#ba1a1a', secondary: '#ffffff' },
-                },
-              }}
-            />
-            <Routes>
-              {/* Auth pages — only for unauthenticated users */}
-              <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
-              <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
-  
-              {/* Dashboard — protected */}
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<Navigate to="/dashboard" replace />} />
-                <Route path="dashboard" element={<DashboardOverview />} />
-                <Route path="leads" element={<Leads />} />
-                <Route path="analytics" element={<div className="p-8 text-on-surface">Analytics — coming soon</div>} />
-                <Route path="settings" element={<div className="p-8 text-on-surface">Settings — coming soon</div>} />
-              </Route>
-  
-              {/* Catch-all */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </SocketProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <SocketProvider>
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 3500,
+                  className: '!bg-surface-card dark:!bg-dark-card !text-text-primary dark:!text-dark-text !border !border-border dark:!border-dark-border !rounded-lg !text-[13px] !shadow-card-lg',
+                  success: {
+                    iconTheme: { primary: '#10b981', secondary: '#ffffff' },
+                  },
+                  error: {
+                    iconTheme: { primary: '#ef4444', secondary: '#ffffff' },
+                  },
+                }}
+              />
+              <Routes>
+                <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+                <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<Navigate to="/dashboard" replace />} />
+                  <Route path="dashboard" element={<DashboardOverview />} />
+                  <Route path="leads" element={<Leads />} />
+                  <Route path="settings" element={
+                    <div className="max-w-[1400px] mx-auto">
+                      <h1 className="text-heading text-text-primary dark:text-dark-text mb-2">Settings</h1>
+                      <p className="text-body text-text-secondary dark:text-dark-text-secondary">Settings panel — coming soon.</p>
+                    </div>
+                  } />
+                </Route>
+
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </SocketProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );
