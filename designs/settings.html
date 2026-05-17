@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smart Leads - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#cbdbf5",
+                      "secondary": "#006a61",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed": "#0f0069",
+                      "surface-tint": "#4d44e3",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "secondary-container": "#86f2e4",
+                      "tertiary-container": "#a44100",
+                      "error-container": "#ffdad6",
+                      "outline": "#777587",
+                      "surface-container-low": "#eff4ff",
+                      "outline-variant": "#c7c4d8",
+                      "on-background": "#0b1c30",
+                      "on-surface": "#0b1c30",
+                      "tertiary-fixed-dim": "#ffb695",
+                      "on-error-container": "#93000a",
+                      "on-primary": "#ffffff",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "inverse-on-surface": "#eaf1ff",
+                      "primary-container": "#4f46e5",
+                      "surface-variant": "#d3e4fe",
+                      "on-surface-variant": "#464555",
+                      "surface-container-high": "#dce9ff",
+                      "on-secondary-container": "#006f66",
+                      "primary-fixed": "#e2dfff",
+                      "surface-container": "#e5eeff",
+                      "tertiary": "#7e3000",
+                      "on-secondary-fixed-variant": "#005049",
+                      "surface-container-highest": "#d3e4fe",
+                      "surface": "#f8f9ff",
+                      "on-primary-container": "#dad7ff",
+                      "inverse-surface": "#213145",
+                      "tertiary-fixed": "#ffdbcc",
+                      "background": "#f8f9ff",
+                      "secondary-fixed": "#89f5e7",
+                      "secondary-fixed-dim": "#6bd8cb",
+                      "on-tertiary-container": "#ffd2be",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "on-secondary-fixed": "#00201d",
+                      "inverse-primary": "#c3c0ff",
+                      "primary": "#3525cd",
+                      "on-tertiary-fixed-variant": "#7b2f00",
+                      "surface-bright": "#f8f9ff",
+                      "on-tertiary-fixed": "#351000",
+                      "on-secondary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "container-max": "1440px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "48px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter", "sans-serif"],
+                      "display-lg": ["Inter", "sans-serif"],
+                      "body-sm": ["Inter", "sans-serif"],
+                      "headline-lg-mobile": ["Inter", "sans-serif"],
+                      "headline-lg": ["Inter", "sans-serif"],
+                      "headline-md": ["Inter", "sans-serif"],
+                      "body-md": ["Inter", "sans-serif"],
+                      "label-md": ["Inter", "sans-serif"],
+                      "label-sm": ["Inter", "sans-serif"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Hide scrollbar for clean aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #c7c4d8;
+            border-radius: 4px;
+        }
+        /* Focus ring utility for inputs */
+        .premium-input:focus {
+            outline: none;
+            border-color: #3525cd;
+            box-shadow: 0 0 0 3px rgba(53, 37, 205, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen w-full flex overflow-hidden antialiased">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full px-4 py-8 bg-surface-container-lowest border-r border-outline-variant shadow-sm w-64 flex-shrink-0 z-50">
+<!-- Brand -->
+<div class="flex items-center gap-3 mb-10 px-2">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-primary text-xl fill">show_chart</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md font-bold text-primary">Smart Leads</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Premium CRM</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col space-y-2 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-low transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-low transition-all duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-label-md font-label-md">Leads</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-low transition-all duration-200" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="text-label-md font-label-md">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-surface-container hover:bg-surface-container-low transition-all duration-200 scale-95 origin-left" href="#">
+<span class="material-symbols-outlined fill text-primary">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</div>
+<!-- CTA -->
+<button class="w-full mb-6 py-3 px-4 bg-primary text-on-primary rounded-lg text-label-md font-label-md font-bold shadow-sm hover:bg-surface-tint transition-colors flex items-center justify-center gap-2 border-t border-white/20">
+<span class="material-symbols-outlined text-sm">add</span>
+            Add Lead
+        </button>
+<!-- Footer Links -->
+<div class="flex flex-col space-y-1 pt-6 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-lg">help</span>
+<span class="text-label-md font-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-lg">logout</span>
+<span class="text-label-md font-label-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden relative w-full min-w-0">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant sticky top-0 flex-shrink-0">
+<div class="flex items-center gap-4">
+<h1 class="text-headline-md font-headline-md font-black text-primary hidden md:block">Smart Leads Dashboard</h1>
+<!-- Mobile Menu Button -->
+<button class="md:hidden p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low focus:ring-2 focus:ring-primary/20">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-low focus:ring-2 focus:ring-primary/20 hidden sm:block">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+<button class="p-2 text-primary font-bold transition-colors rounded-full bg-surface-container focus:ring-2 focus:ring-primary/20 block sm:hidden">
+<span class="material-symbols-outlined fill">settings</span>
+</button>
+</div>
+<div class="h-6 w-px bg-outline-variant mx-2 hidden sm:block"></div>
+<button class="hidden sm:flex px-4 py-2 bg-inverse-surface text-on-primary rounded-lg text-label-md font-label-md font-bold hover:bg-on-surface transition-colors shadow-sm items-center gap-2">
+<span class="material-symbols-outlined text-sm">person_add</span>
+                    Invite Team
+                </button>
+<div class="w-10 h-10 rounded-full border border-outline-variant overflow-hidden cursor-pointer ml-2 flex-shrink-0">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A professional corporate headshot of a person looking confidently at the camera. The setting is a bright, modern office with soft natural light creating a clean, high-key light-mode aesthetic. The color palette features neutral tones with a subtle hint of deep indigo in the clothing, matching a sophisticated minimalist brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7Rn1tscjE5oLXQXs8fzExhArYTG3oWkFZuoqaxMjjgw8_1h-wq9uuNGzuoD35m2OSaT4lP-2qXH5LChtYFTiGoaiqB4g8LKrFNBl7g6SYzOwECgU-yZupiHyNgAuFhEpqRlWmt7YcEAZNdhU34n2KA_LjKcqMMkManEfiO2ukvRXU-F6sACkngOXSWsLAEqZB9nSdh5zYfqkwRJKvLeG5u2_KjvVlMjy-Dx3AomlW7gaz3vXZt-halfhB1utmrmnYmNffdO7a"/>
+</div>
+</div>
+</header>
+<!-- Main Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto w-full">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-12">
+<!-- Page Header -->
+<div class="mb-8">
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-on-background mb-2">Settings &amp; Profile</h1>
+<p class="text-body-md font-body-md text-on-surface-variant">Manage your account preferences, profile details, and team members.</p>
+</div>
+<!-- Tab Navigation -->
+<div class="border-b border-outline-variant mb-8 flex overflow-x-auto no-scrollbar">
+<button class="px-6 py-4 border-b-2 border-primary text-primary text-label-md font-label-md font-bold whitespace-nowrap flex items-center gap-2">
+<span class="material-symbols-outlined text-sm fill">person</span>
+                        Profile Information
+                    </button>
+<button class="px-6 py-4 border-b-2 border-transparent text-on-surface-variant hover:text-on-background text-label-md font-label-md font-medium whitespace-nowrap transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">shield</span>
+                        Account Settings
+                    </button>
+<button class="px-6 py-4 border-b-2 border-transparent text-on-surface-variant hover:text-on-background text-label-md font-label-md font-medium whitespace-nowrap transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">groups</span>
+                        Team Management
+                    </button>
+</div>
+<!-- Bento Grid Layout for Profile Tab -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Main Form Area -->
+<div class="lg:col-span-8 flex flex-col gap-gutter">
+<!-- Personal Details Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="px-6 py-5 border-b border-outline-variant flex justify-between items-center bg-surface/50">
+<h3 class="text-headline-md font-headline-md text-on-background text-[20px]">Personal Details</h3>
+</div>
+<div class="p-6 md:p-8 flex flex-col sm:flex-row gap-8 items-start">
+<!-- Avatar Upload Area -->
+<div class="flex flex-col items-center gap-4 w-full sm:w-auto flex-shrink-0">
+<div class="relative w-32 h-32 rounded-full border-4 border-surface-container overflow-hidden group">
+<img alt="Current Avatar" class="w-full h-full object-cover transition-opacity group-hover:opacity-60" data-alt="A professional corporate headshot of a person looking confidently at the camera. The setting is a bright, modern office with soft natural light creating a clean, high-key light-mode aesthetic. The color palette features neutral tones with a subtle hint of deep indigo in the clothing, matching a sophisticated minimalist brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDbaIKLchFFk2z2OVXiF1XfaWlrmEWUJ1w6fVxtm3_giUY06o_DOsokzElvfGX7yW6J3Ve1_ve0kw3lKiwyqmVt73jwNh_kCgIUn-dP4ysexElGS5R2cpkmobxiAmMdj-P1RkxkCN-SU9LAWowWYnT1dtYrwRxG44toWimzRJhVtUXDcxVihH9hH753WQJMuhis_iKR8zQZnkE9qVOQDNMyciW5U1JfCgFFstQsxbm5Hup3NKODAORwKvLDOqduFOCKdxJwrh_"/>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer bg-black/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-white text-3xl">photo_camera</span>
+</div>
+</div>
+<button class="px-4 py-2 border border-outline-variant text-on-surface-variant rounded-lg text-label-sm font-label-sm hover:bg-surface-container-low transition-colors w-full sm:w-auto">
+                                        Change Avatar
+                                    </button>
+</div>
+<!-- Form Fields -->
+<div class="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-label-md font-label-md text-on-surface-variant">First Name</label>
+<input class="premium-input w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md font-body-md text-on-background transition-all" type="text" value="Alexander"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-label-md font-label-md text-on-surface-variant">Last Name</label>
+<input class="premium-input w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md font-body-md text-on-background transition-all" type="text" value="Wright"/>
+</div>
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="text-label-md font-label-md text-on-surface-variant">Email Address</label>
+<input class="premium-input w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md font-body-md text-on-background transition-all" type="email" value="alexander.wright@smartleads.com"/>
+</div>
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="text-label-md font-label-md text-on-surface-variant">Job Title</label>
+<input class="premium-input w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md font-body-md text-on-background transition-all" type="text" value="Director of Sales"/>
+</div>
+</div>
+</div>
+<div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant flex justify-end">
+<button class="px-6 py-2 bg-primary text-on-primary rounded-lg text-label-md font-label-md font-bold shadow-sm hover:bg-surface-tint transition-colors border-t border-white/20">
+                                    Save Changes
+                                </button>
+</div>
+</div>
+</div>
+<!-- Right Column: Secondary Settings (Bento style) -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<!-- Quick Preferences Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden p-6">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">tune</span>
+</div>
+<h3 class="text-headline-md font-headline-md text-on-background text-[18px]">Preferences</h3>
+</div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-label-md font-label-md text-on-background font-bold">Timezone</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Pacific Time (PT)</p>
+</div>
+<button class="text-primary hover:text-surface-tint text-label-md font-label-md">Edit</button>
+</div>
+<div class="h-px w-full bg-outline-variant/50"></div>
+<div class="flex items-center justify-between">
+<div>
+<p class="text-label-md font-label-md text-on-background font-bold">Language</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">English (US)</p>
+</div>
+<button class="text-primary hover:text-surface-tint text-label-md font-label-md">Edit</button>
+</div>
+</div>
+</div>
+<!-- Security Snippet Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden p-6">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<h3 class="text-headline-md font-headline-md text-on-background text-[18px]">Security</h3>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-6">Your password was last updated 45 days ago. We recommend updating it regularly.</p>
+<button class="w-full py-2 border border-outline-variant text-on-background rounded-lg text-label-md font-label-md font-bold hover:bg-surface-container-low transition-colors">
+                                Update Password
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
