@@ -4,12 +4,12 @@ import toast from 'react-hot-toast';
 
 const LEADS_KEY = ['leads'];
 
-export const useLeads = () => {
+export const useLeads = (filters = {}) => {
   return useQuery({
-    queryKey: LEADS_KEY,
+    queryKey: [...LEADS_KEY, filters],
     queryFn: async () => {
-      const res = await leadsService.getAll();
-      return res.data;
+      const res = await leadsService.getAll(filters);
+      return res; // Returns the full API response containing data and pagination
     },
     staleTime: 30 * 1000,
   });

@@ -18,6 +18,15 @@ export interface ICreateLeadRequest {
   source: LeadSource;
 }
 
+export interface ILeadQuery {
+  page?: number;
+  limit?: number;
+  status?: LeadStatus;
+  source?: LeadSource;
+  search?: string;
+  sort?: 'latest' | 'oldest';
+}
+
 export interface IUpdateLeadRequest {
   name?: string;
   email?: string;

@@ -33,8 +33,22 @@ export const getAll = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const leads = await leadsService.getAllLeads(getCaller(req));
-    sendResponse(res, 200, 'Leads fetched successfully', leads);
+    const { leads, total } = await leadsService.getAllLeads(getCaller(req), req.query);
+    
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    
+    res.status(200).json({
+      success: true,
+      message: 'Leads fetched successfully',
+      data: leads,
+      pagination: {
+        page,
+        limit,
+        totalResults: total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     next(error);
   }

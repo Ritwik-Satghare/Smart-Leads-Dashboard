@@ -1,8 +1,8 @@
 import api from './api';
 
 export const leadsService = {
-  async getAll() {
-    const res = await api.get('/leads');
+  async getAll(params = {}) {
+    const res = await api.get('/leads', { params });
     return res.data;
   },
 

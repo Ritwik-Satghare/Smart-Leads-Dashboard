@@ -1,5 +1,5 @@
 import { Lead, ILead } from '../models/lead.model';
-import { ICreateLeadRequest, IUpdateLeadRequest } from '../types/leads.types';
+import { ICreateLeadRequest, IUpdateLeadRequest, ILeadQuery } from '../types/leads.types';
 import { UserRole } from '../types';
 import { NotFoundError, ForbiddenError } from '../utils';
 
@@ -19,10 +19,43 @@ export const createLead = async (
   return lead;
 };
 
-export const getAllLeads = async (caller: CallerContext): Promise<ILead[]> => {
-  // Admin sees all leads; Sales Users see only their own
-  const filter = caller.role === UserRole.ADMIN ? {} : { createdBy: caller.userId };
-  return Lead.find(filter).sort({ createdAt: -1 });
+export const getAllLeads = async (
+  caller: CallerContext,
+  query: ILeadQuery
+): Promise<{ leads: ILead[]; total: number }> => {
+  const { page = 1, limit = 10, status, source, search, sort = 'latest' } = query;
+  
+  // Build filter object
+  const filter: Record<string, any> = {};
+  
+  // Role-based filter
+  if (caller.role !== UserRole.ADMIN) {
+    filter.createdBy = caller.userId;
+  }
+  
+  // Query filters
+  if (status) filter.status = status;
+  if (source) filter.source = source;
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { email: { $regex: search, $options: 'i' } },
+    ];
+  }
+  
+  // Pagination
+  const skip = (Number(page) - 1) * Number(limit);
+  
+  // Sorting
+  const sortStage = sort === 'oldest' ? { createdAt: 1 as const } : { createdAt: -1 as const };
+  
+  // Execute query
+  const [leads, total] = await Promise.all([
+    Lead.find(filter).sort(sortStage).skip(skip).limit(Number(limit)),
+    Lead.countDocuments(filter),
+  ]);
+  
+  return { leads, total };
 };
 
 export const getLeadById = async (
